@@ -3,8 +3,11 @@ import axios from "axios";
 // ---------------------------------------------
 // API 設定
 // ---------------------------------------------
+// 本機開發時沒設環境變數，就用 localhost；部署到 Vercel 後會讀 VITE_API_BASE_URL
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:8080/api";
+
 const api = axios.create({
-  baseURL: "http://localhost:8080/api",
+  baseURL: API_BASE_URL,
   // withCredentials 不用了：JWT 是用 Authorization header 帶，不是 cookie
 });
 
@@ -42,7 +45,7 @@ api.interceptors.response.use(
 
       isRefreshing = true;
       try {
-        const res = await axios.post("http://localhost:8080/api/members/refresh", {
+        const res = await axios.post(`${API_BASE_URL}/members/refresh`, {
           refreshToken,
         });
         const newAccessToken = res.data.accessToken;
