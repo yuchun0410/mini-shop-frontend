@@ -51,7 +51,7 @@ export default function SalesReport() {
                 <tr key={r.productId}>
                   <td>{r.productName}</td>
                   <td>{r.totalQuantity}</td>
-                  <td>${r.totalRevenue}</td>
+                  <td className="text-brand fw-semibold">${r.totalRevenue}</td>
                 </tr>
               ))}
             </tbody>

@@ -42,7 +42,7 @@ export default function Orders() {
             <li key={order.id} className="list-group-item">
               <div className="d-flex justify-content-between align-items-center">
                 <span>
-                  訂單 #{order.id} — <span className="fw-semibold">${order.totalAmount}</span> — {order.orderDate}
+                  訂單 #{order.id} — <span className="fw-semibold text-brand">${order.totalAmount}</span> — {order.orderDate}
                 </span>
                 <button onClick={() => handleViewDetail(order.id)} className="btn btn-outline-secondary btn-sm">
                   訂單詳情

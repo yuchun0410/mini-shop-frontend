@@ -263,7 +263,7 @@ export default function Products() {
                   )}
                   <div>
                     <div>{p.name}<span className="text-secondary ms-2">庫存 {p.stock}</span></div>
-                    <div className="text-dark fw-semibold">${p.price}</div>
+                    <div className="text-brand fw-semibold">${p.price}</div>
                     {hasOtherAttachment && (
                       <a href={attachmentUrl} target="_blank" rel="noopener noreferrer" className="small">
                         <i className="bi bi-paperclip"></i> 查看附件

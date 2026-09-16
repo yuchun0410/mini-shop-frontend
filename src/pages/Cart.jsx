@@ -78,7 +78,7 @@ export default function Cart() {
 
       {items.length > 0 && (
         <div className="d-flex justify-content-between align-items-center">
-          <h4 className="mb-0">總計：${total}</h4>
+          <h4 className="mb-0 text-brand">總計：${total}</h4>
           <button onClick={handleCheckout} className="btn btn-dark">送出訂單</button>
         </div>
       )}

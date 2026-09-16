@@ -1,5 +1,47 @@
+:root {
+  --brand: #0f5257;
+  --brand-dark: #0b3f42;
+  --brand-light: #e5f1f0;
+}
+
 body {
   font-family: -apple-system, "Segoe UI", Arial, sans-serif;
   background: #f7f7f5;
   color: #222;
+}
+
+a {
+  color: var(--brand);
+}
+a:hover {
+  color: var(--brand-dark);
+}
+
+/* 全站的主要操作按鈕統一用品牌色（原本是黑色 btn-dark，改成深藍綠） */
+.btn-dark {
+  --bs-btn-bg: var(--brand);
+  --bs-btn-border-color: var(--brand);
+  --bs-btn-hover-bg: var(--brand-dark);
+  --bs-btn-hover-border-color: var(--brand-dark);
+  --bs-btn-active-bg: var(--brand-dark);
+  --bs-btn-active-border-color: var(--brand-dark);
+  --bs-btn-disabled-bg: var(--brand);
+  --bs-btn-disabled-border-color: var(--brand);
+}
+
+.text-bg-dark {
+  background-color: var(--brand) !important;
+}
+
+.navbar-brand {
+  color: var(--brand) !important;
+}
+
+.text-brand {
+  color: var(--brand) !important;
+}
+
+.form-control:focus {
+  border-color: var(--brand);
+  box-shadow: 0 0 0 0.25rem rgba(15, 82, 87, 0.15);
 }
