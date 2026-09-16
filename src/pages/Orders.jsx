@@ -23,30 +23,44 @@ export default function Orders() {
   }
 
   return (
-    <div style={{ maxWidth: 600, margin: "40px auto" }}>
-      <h2>我的訂單</h2>
-      {orders.length === 0 && <p>還沒有任何訂單</p>}
-      <ul style={{ listStyle: "none", padding: 0 }}>
-        {orders.map((order) => (
-          <li key={order.id} style={{ borderBottom: "1px solid #eee", padding: "10px 0" }}>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-              <span>
-                訂單 #{order.id} — ${order.totalAmount} — {order.orderDate}
-              </span>
-              <button onClick={() => handleViewDetail(order.id)}>訂單詳情</button>
-            </div>
-            {openOrderId === order.id && (
-              <ul style={{ listStyle: "none", padding: "8px 0 0 16px", margin: 0 }}>
-                {items.map((item) => (
-                  <li key={item.id} style={{ fontSize: 14, color: "#555", padding: "4px 0" }}>
-                    {item.productName} x {item.quantity}（單價 ${item.unitPrice}）
-                  </li>
-                ))}
-              </ul>
-            )}
-          </li>
-        ))}
-      </ul>
+    <div className="container" style={{ maxWidth: 700 }}>
+      <h2 className="mb-4">
+        <i className="bi bi-receipt me-2"></i>
+        我的訂單
+      </h2>
+
+      {orders.length === 0 && (
+        <div className="text-center text-secondary py-5">
+          <i className="bi bi-inbox fs-1 d-block mb-2"></i>
+          還沒有任何訂單
+        </div>
+      )}
+
+      <div className="card shadow-sm">
+        <ul className="list-group list-group-flush">
+          {orders.map((order) => (
+            <li key={order.id} className="list-group-item">
+              <div className="d-flex justify-content-between align-items-center">
+                <span>
+                  訂單 #{order.id} — <span className="fw-semibold">${order.totalAmount}</span> — {order.orderDate}
+                </span>
+                <button onClick={() => handleViewDetail(order.id)} className="btn btn-outline-secondary btn-sm">
+                  訂單詳情
+                </button>
+              </div>
+              {openOrderId === order.id && (
+                <ul className="list-group list-group-flush mt-2 ms-3">
+                  {items.map((item) => (
+                    <li key={item.id} className="list-group-item small text-secondary py-1 border-0 ps-0">
+                      {item.productName} x {item.quantity}（單價 ${item.unitPrice}）
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </li>
+          ))}
+        </ul>
+      </div>
     </div>
   );
 }

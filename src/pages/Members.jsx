@@ -47,53 +47,56 @@ export default function Members() {
   }
 
   return (
-    <div style={{ maxWidth: 600, margin: "40px auto" }}>
-      <h2>會員列表</h2>
+    <div className="container" style={{ maxWidth: 800 }}>
+      <h2 className="mb-4">
+        <i className="bi bi-people me-2"></i>
+        會員列表
+      </h2>
 
-      <form onSubmit={handleSearch} style={{ marginBottom: 16 }}>
+      <form onSubmit={handleSearch} className="input-group mb-4" style={{ maxWidth: 400 }}>
         <input
+          className="form-control"
           placeholder="搜尋帳號或姓名"
           value={searchInput}
           onChange={(e) => setSearchInput(e.target.value)}
         />
-        <button type="submit">搜尋</button>
+        <button type="submit" className="btn btn-outline-secondary">
+          <i className="bi bi-search"></i> 搜尋
+        </button>
       </form>
 
-      {message && <p style={{ color: "red" }}>{message}</p>}
-      <ul style={{ listStyle: "none", padding: 0 }}>
-        {members.map((m) => (
-          <li
-            key={m.id}
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              borderBottom: "1px solid #eee",
-              padding: "8px 0",
-            }}
-          >
-            <span>
-              {m.username}（{m.name || "未設定姓名"}）— {m.email} — <b>{m.role}</b>
-            </span>
-            <div style={{ display: "flex", gap: 8, flexShrink: 0, marginLeft: 12 }}>
-              <button onClick={() => handleToggleRole(m)}>
-                {m.role === "ADMIN" ? "設為一般會員" : "設為管理員"}
-              </button>
-              <button onClick={() => handleDelete(m)}>
-                刪除
-              </button>
-            </div>
-          </li>
-        ))}
-      </ul>
-      {members.length === 0 && <p>沒有符合的會員</p>}
+      {message && <div className="alert alert-danger py-2">{message}</div>}
 
-      <div style={{ display: "flex", justifyContent: "center", alignItems: "center", gap: 12, marginTop: 16 }}>
-        <button onClick={() => setPage((p) => p - 1)} disabled={page <= 1}>
+      <div className="card shadow-sm mb-3">
+        <ul className="list-group list-group-flush">
+          {members.map((m) => (
+            <li key={m.id} className="list-group-item d-flex justify-content-between align-items-center flex-wrap gap-2">
+              <span>
+                {m.username}（{m.name || "未設定姓名"}）— {m.email} —{" "}
+                <span className={`badge ${m.role === "ADMIN" ? "text-bg-dark" : "text-bg-secondary"}`}>
+                  {m.role}
+                </span>
+              </span>
+              <div className="d-flex gap-2">
+                <button onClick={() => handleToggleRole(m)} className="btn btn-outline-secondary btn-sm">
+                  {m.role === "ADMIN" ? "設為一般會員" : "設為管理員"}
+                </button>
+                <button onClick={() => handleDelete(m)} className="btn btn-outline-danger btn-sm">
+                  <i className="bi bi-trash"></i>
+                </button>
+              </div>
+            </li>
+          ))}
+        </ul>
+      </div>
+      {members.length === 0 && <p className="text-secondary text-center">沒有符合的會員</p>}
+
+      <div className="d-flex justify-content-center align-items-center gap-3 mt-4">
+        <button onClick={() => setPage((p) => p - 1)} disabled={page <= 1} className="btn btn-outline-secondary btn-sm">
           上一頁
         </button>
         <span>第 {page} / {totalPages} 頁</span>
-        <button onClick={() => setPage((p) => p + 1)} disabled={page >= totalPages}>
+        <button onClick={() => setPage((p) => p + 1)} disabled={page >= totalPages} className="btn btn-outline-secondary btn-sm">
           下一頁
         </button>
       </div>

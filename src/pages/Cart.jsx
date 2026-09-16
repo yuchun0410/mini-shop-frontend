@@ -41,29 +41,48 @@ export default function Cart() {
   const total = items.reduce((sum, item) => sum + item.product.price * item.quantity, 0);
 
   return (
-    <div style={{ maxWidth: 600, margin: "40px auto" }}>
-      <h2>購物車</h2>
-      {items.length === 0 && <p>購物車是空的</p>}
-      <ul style={{ listStyle: "none", padding: 0 }}>
-        {items.map((item) => (
-          <li key={item.id} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: "1px solid #eee", padding: "8px 0" }}>
-            <span>{item.product.name} — ${item.product.price} x {item.quantity}</span>
-            <div>
-              <button onClick={() => handleUpdateQuantity(item.id, item.quantity - 1)}>-</button>
-              <span style={{ margin: "0 8px" }}>{item.quantity}</span>
-              <button onClick={() => handleUpdateQuantity(item.id, item.quantity + 1)}>+</button>
-              <button onClick={() => handleRemove(item.id)} style={{ marginLeft: 12 }}>刪除</button>
-            </div>
-          </li>
-        ))}
-      </ul>
-      {items.length > 0 && (
-        <>
-          <h3>總計：${total}</h3>
-          <button onClick={handleCheckout}>送出訂單</button>
-        </>
+    <div className="container" style={{ maxWidth: 700 }}>
+      <h2 className="mb-4">
+        <i className="bi bi-cart3 me-2"></i>
+        購物車
+      </h2>
+
+      {items.length === 0 && (
+        <div className="text-center text-secondary py-5">
+          <i className="bi bi-cart-x fs-1 d-block mb-2"></i>
+          購物車是空的
+        </div>
       )}
-      {message && <p style={{ color: "green" }}>{message}</p>}
+
+      {items.length > 0 && (
+        <div className="card shadow-sm mb-3">
+          <ul className="list-group list-group-flush">
+            {items.map((item) => (
+              <li key={item.id} className="list-group-item d-flex justify-content-between align-items-center">
+                <span>{item.product.name} — ${item.product.price} x {item.quantity}</span>
+                <div className="d-flex align-items-center gap-2">
+                  <div className="btn-group btn-group-sm">
+                    <button className="btn btn-outline-secondary" onClick={() => handleUpdateQuantity(item.id, item.quantity - 1)}>-</button>
+                    <span className="btn btn-outline-secondary disabled">{item.quantity}</span>
+                    <button className="btn btn-outline-secondary" onClick={() => handleUpdateQuantity(item.id, item.quantity + 1)}>+</button>
+                  </div>
+                  <button className="btn btn-outline-danger btn-sm" onClick={() => handleRemove(item.id)}>
+                    <i className="bi bi-trash"></i>
+                  </button>
+                </div>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      {items.length > 0 && (
+        <div className="d-flex justify-content-between align-items-center">
+          <h4 className="mb-0">總計：${total}</h4>
+          <button onClick={handleCheckout} className="btn btn-dark">送出訂單</button>
+        </div>
+      )}
+      {message && <div className="alert alert-success mt-3 py-2">{message}</div>}
     </div>
   );
 }

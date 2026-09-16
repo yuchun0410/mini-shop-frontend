@@ -155,138 +155,155 @@ export default function Products() {
   }
 
   return (
-    <div style={{ maxWidth: 600, margin: "40px auto" }}>
-      <h2>商品列表</h2>
+    <div className="container" style={{ maxWidth: 800 }}>
+      <h2 className="mb-4">
+        <i className="bi bi-box-seam me-2"></i>
+        商品列表
+      </h2>
 
-      <form onSubmit={handleSearch} style={{ marginBottom: 16 }}>
+      <form onSubmit={handleSearch} className="input-group mb-4" style={{ maxWidth: 400 }}>
         <input
+          className="form-control"
           placeholder="搜尋商品名稱"
           value={searchInput}
           onChange={(e) => setSearchInput(e.target.value)}
         />
-        <button type="submit">搜尋</button>
+        <button type="submit" className="btn btn-outline-secondary">
+          <i className="bi bi-search"></i> 搜尋
+        </button>
       </form>
 
       {member?.role === "ADMIN" && (
-        <form
-          onSubmit={handleUpload}
-          style={{ marginBottom: 24, padding: 12, border: "1px solid #ddd", borderRadius: 4 }}
-        >
-          <h3 style={{ marginTop: 0 }}>上架新商品（含附件上傳）</h3>
-          <div style={{ marginBottom: 8 }}>
-            <input
-              placeholder="商品名稱"
-              value={uploadName}
-              onChange={(e) => setUploadName(e.target.value)}
-              required
-            />
-          </div>
-          <div style={{ marginBottom: 8 }}>
-            <input
-              type="number"
-              step="0.01"
-              placeholder="價格"
-              value={uploadPrice}
-              onChange={(e) => setUploadPrice(e.target.value)}
-              required
-            />
-          </div>
-          <div style={{ marginBottom: 8 }}>
-            <input
-              type="number"
-              placeholder="庫存"
-              value={uploadStock}
-              onChange={(e) => setUploadStock(e.target.value)}
-              required
-            />
-          </div>
-          <div style={{ marginBottom: 8 }}>
-            {/* 不限格式：PDF、Excel、圖片都可以上傳；不選檔案也可以送出，只會新增商品本身 */}
-            <input
-              type="file"
-              onChange={(e) => {
-                const file = e.target.files[0] || null;
-                if (file && file.size > MAX_FILE_SIZE_BYTES) {
-                  setUploadMessage("檔案太大了，上限是 20MB，請換一個檔案");
-                  setUploadFile(null);
-                  e.target.value = ""; // 把選到的檔案從 input 上清掉，不然畫面上還會顯示那個超大檔案的檔名
-                  return;
-                }
-                setUploadMessage("");
-                setUploadFile(file);
-              }}
-            />
-            <p style={{ fontSize: 12, color: "#666", margin: "4px 0 0" }}>
-              檔案大小上限 20MB
-            </p>
-          </div>
-          <button type="submit" disabled={uploading}>
-            {uploading ? "上傳中..." : "上架商品"}
-          </button>
-          {uploadMessage && <p>{uploadMessage}</p>}
-        </form>
-      )}
-
-      {message && <p>{message}</p>}
-      <ul style={{ listStyle: "none", padding: 0 }}>
-        {products.map((p) => {
-          const contentType = attachments[p.id];
-          const attachmentUrl = `${api.defaults.baseURL}/products/${p.id}/attachment`;
-          // 圖片才用 <img> 直接顯示縮圖；其他類型（PDF、Excel...）給一個新分頁開啟/下載的連結，
-          // 不強行塞進 <img>（瀏覽器沒辦法把 PDF 當圖片渲染，硬塞只會顯示壞圖示）
-          const isImage = contentType && contentType.startsWith("image/");
-          const hasOtherAttachment = contentType && !isImage;
-
-          return (
-            <li key={p.id} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: "1px solid #eee", padding: "8px 0" }}>
-              <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                {isImage && (
-                  <img
-                    src={attachmentUrl}
-                    alt={p.name}
-                    style={{ width: 48, height: 48, objectFit: "cover", borderRadius: 4, border: "1px solid #eee" }}
+        <div className="card shadow-sm mb-4">
+          <div className="card-body">
+            <h5 className="card-title mb-3">上架新商品（含附件上傳）</h5>
+            <form onSubmit={handleUpload}>
+              <div className="row g-2 mb-2">
+                <div className="col-md-4">
+                  <input
+                    className="form-control"
+                    placeholder="商品名稱"
+                    value={uploadName}
+                    onChange={(e) => setUploadName(e.target.value)}
+                    required
                   />
-                )}
-                <div>
-                  <span>{p.name}（庫存 {p.stock}）— ${p.price}</span>
-                  {hasOtherAttachment && (
-                    <div>
-                      <a href={attachmentUrl} target="_blank" rel="noopener noreferrer" style={{ fontSize: 12 }}>
-                        📎 查看附件
-                      </a>
-                    </div>
-                  )}
+                </div>
+                <div className="col-md-4">
+                  <input
+                    type="number"
+                    step="0.01"
+                    className="form-control"
+                    placeholder="價格"
+                    value={uploadPrice}
+                    onChange={(e) => setUploadPrice(e.target.value)}
+                    required
+                  />
+                </div>
+                <div className="col-md-4">
+                  <input
+                    type="number"
+                    className="form-control"
+                    placeholder="庫存"
+                    value={uploadStock}
+                    onChange={(e) => setUploadStock(e.target.value)}
+                    required
+                  />
                 </div>
               </div>
-              <div style={{ display: "flex", gap: 8, flexShrink: 0, marginLeft: 12 }}>
-                <button onClick={() => handleAddToCart(p.id)}>加入購物車</button>
-                {member?.role === "ADMIN" && (
-                  <>
-                    {/* 用 <label> 包住隱藏的 file input，點文字就等於點 input，畫面上不用另外放一顆醜的原生檔案選擇按鈕 */}
-                    <label style={{ fontSize: 12, cursor: "pointer", border: "1px solid #ccc", borderRadius: 4, padding: "4px 8px" }}>
-                      📎 換附件
-                      <input
-                        type="file"
-                        style={{ display: "none" }}
-                        onChange={(e) => handleUpdateAttachment(p.id, e)}
-                      />
-                    </label>
-                    <button onClick={() => handleDeleteProduct(p.id)}>刪除</button>
-                  </>
-                )}
+              <div className="mb-2">
+                {/* 不限格式：PDF、Excel、圖片都可以上傳；不選檔案也可以送出，只會新增商品本身 */}
+                <input
+                  type="file"
+                  className="form-control"
+                  onChange={(e) => {
+                    const file = e.target.files[0] || null;
+                    if (file && file.size > MAX_FILE_SIZE_BYTES) {
+                      setUploadMessage("檔案太大了，上限是 20MB，請換一個檔案");
+                      setUploadFile(null);
+                      e.target.value = ""; // 把選到的檔案從 input 上清掉，不然畫面上還會顯示那個超大檔案的檔名
+                      return;
+                    }
+                    setUploadMessage("");
+                    setUploadFile(file);
+                  }}
+                />
+                <div className="form-text">檔案大小上限 20MB</div>
               </div>
-            </li>
-          );
-        })}
-      </ul>
-      {products.length === 0 && <p>沒有符合的商品</p>}
+              <button type="submit" className="btn btn-dark" disabled={uploading}>
+                {uploading ? "上傳中..." : "上架商品"}
+              </button>
+              {uploadMessage && <div className="alert alert-info py-2 mt-2 mb-0">{uploadMessage}</div>}
+            </form>
+          </div>
+        </div>
+      )}
 
-      <div style={{ display: "flex", justifyContent: "center", alignItems: "center", gap: 12, marginTop: 16 }}>
-        <button onClick={() => setPage((p) => p - 1)} disabled={page <= 1}>
+      {message && <div className="alert alert-info py-2">{message}</div>}
+
+      <div className="card shadow-sm mb-3">
+        <ul className="list-group list-group-flush">
+          {products.map((p) => {
+            const contentType = attachments[p.id];
+            const attachmentUrl = `${api.defaults.baseURL}/products/${p.id}/attachment`;
+            // 圖片才用 <img> 直接顯示縮圖；其他類型（PDF、Excel...）給一個新分頁開啟/下載的連結，
+            // 不強行塞進 <img>（瀏覽器沒辦法把 PDF 當圖片渲染，硬塞只會顯示壞圖示）
+            const isImage = contentType && contentType.startsWith("image/");
+            const hasOtherAttachment = contentType && !isImage;
+
+            return (
+              <li key={p.id} className="list-group-item d-flex justify-content-between align-items-center flex-wrap gap-2">
+                <div className="d-flex align-items-center gap-3">
+                  {isImage && (
+                    <img
+                      src={attachmentUrl}
+                      alt={p.name}
+                      className="rounded border"
+                      style={{ width: 48, height: 48, objectFit: "cover" }}
+                    />
+                  )}
+                  <div>
+                    <div>{p.name}<span className="text-secondary ms-2">庫存 {p.stock}</span></div>
+                    <div className="text-dark fw-semibold">${p.price}</div>
+                    {hasOtherAttachment && (
+                      <a href={attachmentUrl} target="_blank" rel="noopener noreferrer" className="small">
+                        <i className="bi bi-paperclip"></i> 查看附件
+                      </a>
+                    )}
+                  </div>
+                </div>
+                <div className="d-flex align-items-center gap-2">
+                  <button onClick={() => handleAddToCart(p.id)} className="btn btn-dark btn-sm">
+                    <i className="bi bi-cart-plus me-1"></i>加入購物車
+                  </button>
+                  {member?.role === "ADMIN" && (
+                    <>
+                      <label className="btn btn-outline-secondary btn-sm mb-0">
+                        <i className="bi bi-paperclip me-1"></i>換附件
+                        <input
+                          type="file"
+                          className="d-none"
+                          onChange={(e) => handleUpdateAttachment(p.id, e)}
+                        />
+                      </label>
+                      <button onClick={() => handleDeleteProduct(p.id)} className="btn btn-outline-danger btn-sm">
+                        <i className="bi bi-trash"></i>
+                      </button>
+                    </>
+                  )}
+                </div>
+              </li>
+            );
+          })}
+        </ul>
+      </div>
+      {products.length === 0 && <p className="text-secondary text-center">沒有符合的商品</p>}
+
+      <div className="d-flex justify-content-center align-items-center gap-3 mt-4">
+        <button onClick={() => setPage((p) => p - 1)} disabled={page <= 1} className="btn btn-outline-secondary btn-sm">
           上一頁
         </button>
         <span>第 {page} / {totalPages} 頁</span>
-        <button onClick={() => setPage((p) => p + 1)} disabled={page >= totalPages}>
+        <button onClick={() => setPage((p) => p + 1)} disabled={page >= totalPages} className="btn btn-outline-secondary btn-sm">
           下一頁
         </button>
       </div>

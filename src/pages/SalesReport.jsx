@@ -22,29 +22,41 @@ export default function SalesReport() {
   }
 
   return (
-    <div style={{ maxWidth: 600, margin: "40px auto" }}>
-      <h2>商品銷售報表</h2>
-      <button onClick={handleDownloadPdf}>輸出PDF報表</button>
-      {rows.length === 0 && <p>目前沒有銷售資料</p>}
+    <div className="container" style={{ maxWidth: 700 }}>
+      <div className="d-flex justify-content-between align-items-center mb-4">
+        <h2 className="mb-0">
+          <i className="bi bi-bar-chart me-2"></i>
+          商品銷售報表
+        </h2>
+        <button onClick={handleDownloadPdf} className="btn btn-dark btn-sm">
+          <i className="bi bi-file-earmark-pdf me-1"></i>
+          輸出PDF報表
+        </button>
+      </div>
+
+      {rows.length === 0 && <p className="text-secondary text-center">目前沒有銷售資料</p>}
+
       {rows.length > 0 && (
-        <table style={{ width: "100%", borderCollapse: "collapse" }}>
-          <thead>
-            <tr style={{ borderBottom: "2px solid #ddd", textAlign: "left" }}>
-              <th style={{ padding: "8px 4px" }}>商品</th>
-              <th style={{ padding: "8px 4px" }}>累計銷量</th>
-              <th style={{ padding: "8px 4px" }}>總營收</th>
-            </tr>
-          </thead>
-          <tbody>
-            {rows.map((r) => (
-              <tr key={r.productId} style={{ borderBottom: "1px solid #eee" }}>
-                <td style={{ padding: "8px 4px" }}>{r.productName}</td>
-                <td style={{ padding: "8px 4px" }}>{r.totalQuantity}</td>
-                <td style={{ padding: "8px 4px" }}>${r.totalRevenue}</td>
+        <div className="card shadow-sm">
+          <table className="table table-hover mb-0">
+            <thead className="table-light">
+              <tr>
+                <th>商品</th>
+                <th>累計銷量</th>
+                <th>總營收</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {rows.map((r) => (
+                <tr key={r.productId}>
+                  <td>{r.productName}</td>
+                  <td>{r.totalQuantity}</td>
+                  <td>${r.totalRevenue}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       )}
     </div>
   );
