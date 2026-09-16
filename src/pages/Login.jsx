@@ -26,6 +26,18 @@ export default function Login() {
   return (
     <div style={{ maxWidth: 320, margin: "40px auto" }}>
       <h2>登入</h2>
+      <div
+        style={{
+          background: "#f5f5f5",
+          border: "1px solid #ddd",
+          borderRadius: 4,
+          padding: "8px 12px",
+          marginBottom: 16,
+          fontSize: 14,
+        }}
+      >
+        測試帳號（管理員）：admin / admin123
+      </div>
       <form onSubmit={handleSubmit}>
         <div>
           <input placeholder="帳號" value={username} onChange={(e) => setUsername(e.target.value)} />
