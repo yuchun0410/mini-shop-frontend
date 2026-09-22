@@ -2,7 +2,8 @@
 
 會員購物網站的前端，串接 [MiniShopApi](https://github.com/yuchun0410/MiniShopApi) 後端，採前後端分離架構。
 
-線上展示：https://mini-shop-frontend-blond.vercel.app（免費方案，閒置後首次載入需約 30 秒喚醒）
+線上展示：https://mini-shop-frontend-blond.vercel.app
+（免費方案，閒置後首次載入需約 30 秒喚醒）
 
 ## 技術棧
 
