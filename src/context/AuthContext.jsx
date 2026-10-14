@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import api from "../api";
+import api, { refreshAccessToken, setAccessToken } from "../api";
 
 // ---------------------------------------------
 // 登入狀態管理（AuthContext）
@@ -10,22 +10,23 @@ export function AuthProvider({ children }) {
   const [member, setMember] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // 一進網站先問後端「現在是不是已經登入了？」，重新整理頁面登入狀態才不會不見
+  // 一進網站先靠 cookie 裡的 refresh token 換一個 access token，再問後端「我是誰」。
+  // access token 只存在記憶體，重新整理頁面就沒了，所以這一步是「恢復登入狀態」的關鍵。
+  // 訪客沒有 cookie，換發會失敗，視為沒登入就好。
   useEffect(() => {
-    api
-      .get("/members/me")
+    refreshAccessToken()
+      .then(() => api.get("/members/me"))
       .then((res) => setMember(res.data))
       .catch(() => setMember(null))
       .finally(() => setLoading(false));
   }, []);
 
-  // 登入成功後，後端回傳 { member, accessToken, refreshToken }
-  // accessToken / refreshToken 要存起來，之後每次打 API 才帶得出去
+  // 登入成功後，後端回傳 { member, accessToken }，refresh token 由後端直接放進 HttpOnly cookie，
+  // 前端看不到也不用處理。accessToken 只存在記憶體。
   async function login(username, password) {
     const res = await api.post("/members/login", { username, password });
-    const { member, accessToken, refreshToken } = res.data;
-    localStorage.setItem("accessToken", accessToken);
-    localStorage.setItem("refreshToken", refreshToken);
+    const { member, accessToken } = res.data;
+    setAccessToken(accessToken);
     setMember(member);
   }
 
@@ -33,17 +34,15 @@ export function AuthProvider({ children }) {
     await api.post("/members/register", { username, password, email, name });
   }
 
-  // 登出要把 refreshToken 一起送給後端，讓後端能真的把它從 Redis 刪掉
-  // 前端自己的 token 也要清掉，不然畫面上看起來像登出了，但 token 其實還留著
+  // 登出：後端會從 cookie 讀 refresh token 並從 Redis 刪掉，同時叫瀏覽器把 cookie 清掉。
+  // 前端自己也要清掉記憶體裡的 access token，不然畫面上看起來像登出了，token 其實還在。
   async function logout() {
-    const refreshToken = localStorage.getItem("refreshToken");
     try {
-      await api.post("/members/logout", { refreshToken });
+      await api.post("/members/logout");
     } catch (e) {
       // 就算後端登出失敗，前端還是要清掉本地狀態
     }
-    localStorage.removeItem("accessToken");
-    localStorage.removeItem("refreshToken");
+    setAccessToken(null);
     setMember(null);
   }
 
